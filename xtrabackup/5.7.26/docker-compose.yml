@@ -1,0 +1,12 @@
+version: "3"
+
+services: 
+    xtrabackup:
+        # 5.6.33, 5.7.26, 8.0.18
+        image: bitnami/percona-xtrabackup:2.4.23
+        restart: always
+        volumes: 
+            - ../../db/backup:/data/backups/mysql
+          
+        command: innobackupex --remote-host=root@localhost --password test1234 --port 13306 /data/backups/mysql
+        

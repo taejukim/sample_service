@@ -1,0 +1,37 @@
+version: "3"
+
+services: 
+    db:
+        # 5.6.33, 5.7.26, 8.0.18
+        image: mysql:5.7.26 # 여기를 수정
+        restart: always
+        container_name: db
+        environment: 
+            - MYSQL_DATABASE=sample_service
+            - MYSQL_ROOT_PASSWORD=test1234
+            - MYSQL_USER=tester
+            - MYSQL_PASSWORD=test1234
+            - TZ=Asia/Seoul
+        volumes: 
+            - ./db/data:/var/lib/mysql
+            - ./db/conf.d:/etc/mysql/conf.d
+            - ./db/backup:/data/backups/mysql
+            - ./db/logs:/logs/mysql
+        expose:
+            - "3306"
+        ports:
+            - "13306:3306"
+    web: 
+        build: .
+        container_name: sample_service
+        restart: on-failure
+        environment: 
+            - DJANGO_SU_NAME=tester
+            - DJANGO_SU_EMAIL=tester@nhnsoft.com
+            - DJANGO_SU_PASSWORD=test1234
+        volumes:
+            - .:/sample_service
+        ports: 
+            - "8000:8000"
+        depends_on: 
+            - db
